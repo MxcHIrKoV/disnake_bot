@@ -1,7 +1,11 @@
 import datetime
+import sqlite3
 
 import disnake
 from disnake.ext import commands
+
+conn = sqlite3.connect('database.db')
+cur = conn.cursor()
 
 
 class SlashCommands(commands.Cog):
@@ -47,21 +51,30 @@ class SlashCommands(commands.Cog):
     async def ping(self, inter, member: disnake.Member, num: int):
         for i in range(0, num):
             await inter.send(f"<@{member.id}>")
-        print(inter)
 
     @commands.slash_command()
     async def rename(self, inter, member: disnake.Member, rename: str):
         await inter.send(f"Ник <@{member.id}> изменен на {rename}")
         await member.edit(nick=rename)
-        print(inter)
 
     @commands.slash_command()
-    async def test1(self, message, member: disnake.Member):
-        guild = message.guild
-        channel = guild.get_channel(1112709357654790205)
+    async def test1(self, inter, member: disnake.Member = None):
+        t = ""
+        cur.execute("""SELECT * FROM users""")
+        ctx = cur.fetchall()
 
-        embed = disnake.Embed(title="🖐", description=f"Новый пользователь {member.mention}")
-        await channel.send(embed=embed)
+        if member is None:
+            t = ""
+            for i in ctx:
+                # print(i)
+                txt = f"<@{i[0]}> - {i[1]}\n"
+                t += txt
+            await inter.send(t)
+        else:
+
+            for i in ctx:
+                if member.id == i[0]:
+                    await inter.send(f"{member.mention} - {i[1]} сообщений")
 
 
 def setup(bot: commands.Bot):
