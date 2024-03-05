@@ -1,6 +1,8 @@
 import disnake
 from disnake.ext import commands
 
+from main import conn, cur
+
 
 class Events(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -17,16 +19,26 @@ class Events(commands.Cog):
         channel = guild.get_channel(1213894738801852447)
         embed = disnake.Embed(title="🖐", description=f"Новый пользователь {member.mention}")
 
+        # cur.execute("""INSERT INTO users (user_id, num_msg, insertion_date) VALUES (?, ?, ?)""", ())
+
         await channel.send(embed=embed)
         await member.add_roles(role)
 
-    # @commands.Cog.listener()
-    # async def on_message(self, message, member: disnake.Member):
-    #     guild = message.guild
-    #     channel = guild.get_channel(1112709357654790205)
-    #
-    #     embed = disnake.Embed(title=f"<@{member.mention}>", description="Новый польщователь")
-    #     await channel.send(embed=embed)
+
+
+
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        guild = message.guild
+        channel = guild.get_channel(1112709357654790205)
+
+        # print(message)
+        # print(guild, end="\n\n")
+        # print(channel)
+        print(message.author.id)
+
+
+
 
 
 def setup(bot: commands.Bot):
