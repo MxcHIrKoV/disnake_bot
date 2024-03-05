@@ -15,19 +15,18 @@ class Events(commands.Cog):
         guild = member.guild
         role = guild.get_role(1174676470245900368)
         channel = guild.get_channel(1213894738801852447)
-        embed = disnake.Embed(title="🤢", description=f"{member.name}")
+        embed = disnake.Embed(title="🖐", description=f"Новый пользователь {member.mention}")
 
         await channel.send(embed=embed)
         await member.add_roles(role)
 
     # @commands.Cog.listener()
-    # async def on_message(self, message):
+    # async def on_message(self, message, member: disnake.Member):
     #     guild = message.guild
-    #     channel = guild.get_channel(1213894738801852447)
+    #     channel = guild.get_channel(1112709357654790205)
     #
-    #     if message.author.bot == False:
-    #         await channel.send(f"<@{message.author.id}> : {message.content}")
-    #         print(message)
+    #     embed = disnake.Embed(title=f"<@{member.mention}>", description="Новый польщователь")
+    #     await channel.send(embed=embed)
 
 
 def setup(bot: commands.Bot):

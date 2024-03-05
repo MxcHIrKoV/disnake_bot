@@ -37,13 +37,13 @@ class SlashCommands(commands.Cog):
         embed.set_thumbnail(url="https://static.tildacdn.com/tild3733-3865-4433-b235-393665663265/VK-Logo-2016.png")
         await inter.send(embed=embed)
 
-    @commands.slash_command(description="Очищает чат")
+    @commands.slash_command(description="Очищает чат (count сообщений)")
     @commands.has_permissions(administrator=True)
     async def clear(self, inter, count: int):
         await inter.response.send_message(f"Удалено {count + 1} сообщений")
         await inter.channel.purge(limit=count + 1)
 
-    @commands.slash_command()
+    @commands.slash_command(description="Пингует участника num количество раз")
     async def ping(self, inter, member: disnake.Member, num: int):
         for i in range(0, num):
             await inter.send(f"<@{member.id}>")
@@ -54,6 +54,14 @@ class SlashCommands(commands.Cog):
         await inter.send(f"Ник <@{member.id}> изменен на {rename}")
         await member.edit(nick=rename)
         print(inter)
+
+    @commands.slash_command()
+    async def test1(self, message, member: disnake.Member):
+        guild = message.guild
+        channel = guild.get_channel(1112709357654790205)
+
+        embed = disnake.Embed(title="🖐", description=f"Новый пользователь {member.mention}")
+        await channel.send(embed=embed)
 
 
 def setup(bot: commands.Bot):
