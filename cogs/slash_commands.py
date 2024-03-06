@@ -10,6 +10,7 @@ cur = conn.cursor()
 
 photo_bg = "https://wp-s.ru/wallpapers/13/1/324643875427876/mnozhestvo-vodopadov-sozdayut-otlichnyj-pejzazh.jpg"
 
+
 class SlashCommands(commands.Cog):
     def __init__(self, bot=commands.Bot):
         self.bot = bot
@@ -59,8 +60,8 @@ class SlashCommands(commands.Cog):
         await inter.send(f"Ник <@{member.id}> изменен на {rename}")
         await member.edit(nick=rename)
 
-    @commands.slash_command()
-    async def test1(self, inter, member: disnake.Member = None):
+    @commands.slash_command(name="статистика", description="Посмотреть статистику сообщений участников")
+    async def stat(self, inter, member: disnake.Member = None):
         t = ""
         cur.execute("""SELECT * FROM users""")
         ctx = cur.fetchall()
@@ -78,7 +79,7 @@ class SlashCommands(commands.Cog):
                 if member.id == i[0]:
                     await inter.send(f"{member.mention} - {i[1]} сообщений")
 
-    @commands.slash_command(aliases=["я"])
+    @commands.slash_command(name="карта", description="Посмотреть карточку")
     async def card_user(self, inter, user: disnake.Member = None):
         user = user or inter.user
         name = user.name
@@ -88,17 +89,36 @@ class SlashCommands(commands.Cog):
             text_color="white",
             bar_color="#5865f2"
         )
+
+        cur.execute(f"SELECT * FROM users WHERE user_id = {user.id}")
+        ctx = cur.fetchone()
+
         await inter.response.defer()
         a = RankCard(
             settings=card_settings,
             avatar=user.display_avatar.url,
-            level=3,
-            current_exp=4,
-            max_exp=5,
+            level=ctx[2],
+            current_exp=ctx[3],
+            max_exp=10,
             username=f"{name}"
         )
         image = await a.card1()
         await inter.edit_original_message(file=disnake.File(image, filename="rank.png"))
+
+    @commands.slash_command()
+    @commands.has_permissions(administrator=True)
+    async def current_exp(self, inter, user: disnake.Member = None, amount: int = 1):
+        user = user or inter.user
+
+        cur.execute(f"SELECT * FROM users WHERE user_id = {user.id}")
+        ctx = cur.fetchone()
+
+        num = ctx[3]
+        num += amount
+        cur.execute(f"""UPDATE users SET current_exp={num} WHERE user_id={user.id}""")
+        conn.commit()
+
+        await inter.send(f"Текущий опыт {user.mention} увеличен на {amount} единиц.")
 
 
 def setup(bot: commands.Bot):

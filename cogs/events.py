@@ -19,19 +19,21 @@ class Events(commands.Cog):
 
         guild = self.bot.get_guild(1112709355989647370)
 
-        cur.execute("""CREATE TABLE IF NOT EXISTS users(
-            user_id INTEGER PRIMARY KEY,
-            num_msg INTEGER,
-            insertion_date TEXT)""")
+        cur.execute(
+            """CREATE TABLE IF NOT EXISTS users(
+            user_id INTEGER PRIMARY KEY, 
+            num_msg INTEGER, 
+            user_levle INTEGER, 
+            current_exp INTEGER
+            )""")
         conn.commit()
 
         for member in guild.members:
             if cur.execute(f"SELECT user_id FROM users WHERE user_id = {member.id}").fetchone() is None:
-                cur.execute(f"INSERT INTO users VALUES ({member.id}, 0, '{datetime.datetime.now()}')")
+                cur.execute(f"INSERT INTO users VALUES ({member.id}, 0, 0, 0)")
                 conn.commit()
             else:
                 pass
-
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
@@ -41,7 +43,7 @@ class Events(commands.Cog):
         embed = disnake.Embed(title="🖐", description=f"Новый пользователь {member.mention}")
 
         if cur.execute(f"SELECT user_id FROM users WHERE user_id = {member.id}").fetchone() is None:
-            cur.execute(f"INSERT INTO users VALUES ('{member.id}', 0, {datetime.datetime.now()})")
+            cur.execute(f"INSERT INTO users VALUES ('{member.id}', 0, 0, 0)")
         else:
             pass
         conn.commit()
