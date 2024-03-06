@@ -1,5 +1,6 @@
-import datetime
 import sqlite3
+
+from DiscordLevelingCard import RankCard, Settings
 
 import disnake
 from disnake.ext import commands
@@ -7,6 +8,7 @@ from disnake.ext import commands
 conn = sqlite3.connect('database.db')
 cur = conn.cursor()
 
+photo_bg = "https://wp-s.ru/wallpapers/13/1/324643875427876/mnozhestvo-vodopadov-sozdayut-otlichnyj-pejzazh.jpg"
 
 class SlashCommands(commands.Cog):
     def __init__(self, bot=commands.Bot):
@@ -75,6 +77,28 @@ class SlashCommands(commands.Cog):
             for i in ctx:
                 if member.id == i[0]:
                     await inter.send(f"{member.mention} - {i[1]} сообщений")
+
+    @commands.slash_command(aliases=["я"])
+    async def card_user(self, inter, user: disnake.Member = None):
+        user = user or inter.user
+        name = user.name
+
+        card_settings = Settings(
+            background=photo_bg,
+            text_color="white",
+            bar_color="#5865f2"
+        )
+        await inter.response.defer()
+        a = RankCard(
+            settings=card_settings,
+            avatar=user.display_avatar.url,
+            level=3,
+            current_exp=4,
+            max_exp=5,
+            username=f"{name}"
+        )
+        image = await a.card1()
+        await inter.edit_original_message(file=disnake.File(image, filename="rank.png"))
 
 
 def setup(bot: commands.Bot):

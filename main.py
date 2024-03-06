@@ -3,12 +3,11 @@ from disnake.ext import commands
 
 import os
 from dotenv import load_dotenv
-import sqlite3
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 
-bot = commands.Bot(command_prefix="!", intents=disnake.Intents.all(),
+bot = commands.Bot(command_prefix=".", intents=disnake.Intents.all(),
                    activity=disnake.Game("PyCharm", status=disnake.Status.online))
 
 
