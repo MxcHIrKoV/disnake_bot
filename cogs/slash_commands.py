@@ -103,7 +103,7 @@ class SlashCommands(commands.Cog):
         image = await a.card2()
         await inter.edit_original_message(file=disnake.File(image, filename="rank.png"))
 
-    @commands.slash_command(name="Добавить_опыт", description="Добавляет amount опыта участнику")
+    @commands.slash_command(description="Добавляет amount опыта участнику")
     @commands.has_permissions(administrator=True)
     async def current_exp(self, inter, amount: int = 1, user: disnake.Member = None):
         user = user or inter.user
