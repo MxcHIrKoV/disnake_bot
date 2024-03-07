@@ -52,10 +52,8 @@ class Events(commands.Cog):
         await member.add_roles(role)
 
     @commands.Cog.listener()
-    async def on_message(self, message):
-        guild = message.guild
-        channel = guild.get_channel(1112709357654790205)
-        user_id = message.author.id
+    async def on_message(self, inter):
+        user_id = inter.author.id
 
         cur.execute(f"""SELECT num_msg FROM users WHERE user_id={user_id}""")
         num = cur.fetchall()  # [(0,)]
