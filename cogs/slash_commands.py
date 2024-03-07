@@ -1,14 +1,12 @@
 import sqlite3
 
-from DiscordLevelingCard import RankCard, Settings
+from DiscordLevelingCard import Settings, RankCard
 
 import disnake
 from disnake.ext import commands
 
 conn = sqlite3.connect('database.db')
 cur = conn.cursor()
-
-photo_bg = "https://wp-s.ru/wallpapers/13/1/324643875427876/mnozhestvo-vodopadov-sozdayut-otlichnyj-pejzazh.jpg"
 
 
 class SlashCommands(commands.Cog):
@@ -69,7 +67,6 @@ class SlashCommands(commands.Cog):
         if member is None:
             t = ""
             for i in ctx:
-                # print(i)
                 txt = f"<@{i[0]}> - {i[1]}\n"
                 t += txt
             await inter.send(t)
@@ -84,6 +81,7 @@ class SlashCommands(commands.Cog):
         user = user or inter.user
         name = user.name
 
+        photo_bg = "cogs/photo/3a232d90c53e68de2e15089aed95a67b.jpg"
         card_settings = Settings(
             background=photo_bg,
             text_color="white",
@@ -99,24 +97,35 @@ class SlashCommands(commands.Cog):
             avatar=user.display_avatar.url,
             level=ctx[2],
             current_exp=ctx[3],
-            max_exp=10,
+            max_exp=20,
             username=f"{name}"
         )
-        image = await a.card1()
+        image = await a.card2()
         await inter.edit_original_message(file=disnake.File(image, filename="rank.png"))
 
-    @commands.slash_command()
+    @commands.slash_command(name="Добавить_опыт", description="Добавляет amount опыта участнику")
     @commands.has_permissions(administrator=True)
-    async def current_exp(self, inter, user: disnake.Member = None, amount: int = 1):
+    async def current_exp(self, inter, amount: int = 1, user: disnake.Member = None):
         user = user or inter.user
 
-        cur.execute(f"SELECT * FROM users WHERE user_id = {user.id}")
+        cur.execute(f"SELECT current_exp FROM users WHERE user_id = {user.id}")
         ctx = cur.fetchone()
 
-        num = ctx[3]
+        num = ctx[0]
         num += amount
         cur.execute(f"""UPDATE users SET current_exp={num} WHERE user_id={user.id}""")
         conn.commit()
+
+        cur.execute(f"SELECT user_levle, current_exp FROM users WHERE user_id = {user.id}")
+        ctx1 = cur.fetchone()
+
+        if ctx1[1] >= 20:
+            current = ctx1[1] - 20
+
+            lvl = ctx1[0]
+            lvl += 1
+            cur.execute(f"""UPDATE users SET user_levle={lvl}, current_exp={current} WHERE user_id={user.id}""")
+            conn.commit()
 
         await inter.send(f"Текущий опыт {user.mention} увеличен на {amount} единиц.")
 

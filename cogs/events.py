@@ -28,12 +28,12 @@ class Events(commands.Cog):
             )""")
         conn.commit()
 
-        for member in guild.members:
-            if cur.execute(f"SELECT user_id FROM users WHERE user_id = {member.id}").fetchone() is None:
-                cur.execute(f"INSERT INTO users VALUES ({member.id}, 0, 0, 0)")
-                conn.commit()
-            else:
-                pass
+        # for member in guild.members:
+        #     if cur.execute(f"SELECT user_id FROM users WHERE user_id = {member.id}").fetchone() is None:
+        #         cur.execute(f"INSERT INTO users VALUES ({member.id}, 0, 0, 0)")
+        #         conn.commit()
+        #     else:
+        #         pass
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
