@@ -1,3 +1,4 @@
+import re
 import sqlite3
 import time
 
@@ -142,6 +143,10 @@ class SlashCommands(commands.Cog):
         #     description=anim[0]["article"]["title"]
         # )
 
+
+
+
+
         if date is None:
 
             m = []
@@ -171,6 +176,30 @@ class SlashCommands(commands.Cog):
                 embed.set_image(url=i['article']['url_photo'])
 
             await inter.response.send_message(embed=embed)
+
+
+        # elif date == (i for i in num):
+        #     m = []
+        #     print("Dsgjkybkjcm")
+        #     for anime in anim:
+        #
+        #         # if anime["date"][:anime["date"].find(', ')] == re.compile(r"понедельник"):
+        #         #     m.append(anime)
+        #
+        #         if anime["date"] == re.compile(fr"{date}"):
+        #             m.append(anime)
+        #
+        #         # print(anime["date"][:anime["date"].find(', ')])
+        #
+        #     embed = disnake.Embed(
+        #         title=m[0]["date"],
+        #     )
+        #     for i in m:
+        #         embed.add_field(name=i['article']["title"], value=f"{i['article']['series']}\n{i['article']['time']}",
+        #                         inline=False)
+        #         embed.set_image(url=i['article']['url_photo'])
+        #
+        #     await inter.response.send_message(embed=embed)
 
 
 def setup(bot: commands.Bot):
