@@ -1,9 +1,12 @@
 import sqlite3
+import time
 
 from DiscordLevelingCard import Settings, RankCard
 
 import disnake
 from disnake.ext import commands
+
+from pars import anim
 
 conn = sqlite3.connect('database.db')
 cur = conn.cursor()
@@ -35,11 +38,13 @@ class SlashCommands(commands.Cog):
         embed.add_field(name="name4", value="value4", inline=False)
         embed.add_field(name="name5", value="value5", inline=True)
         embed.add_field(name="name6", value="value6", inline=True)
-        embed.set_image(url="https://static.tildacdn.com/tild3733-3865-4433-b235-393665663265/VK-Logo-2016.png")
+        embed.set_image(
+            url="https://desu.shikimori.one/uploads/poster/animes/54265/preview_alt_2x-1de0cbfe93df71cf7a49d46b36bd3366.jpeg")
         embed.set_author(name="name", url="https://vk.com/max.chirkov5",
-                         icon_url="https://static.tildacdn.com/tild3733-3865-4433-b235-393665663265/VK-Logo-2016.png")
+                         icon_url="https://desu.shikimori.one/uploads/poster/animes/54265/preview_alt-9867d9e078891abe32b4da77910b9b68.jpeg")
         embed.set_footer(text=f"@{inter.author.name}")
-        embed.set_thumbnail(url="https://static.tildacdn.com/tild3733-3865-4433-b235-393665663265/VK-Logo-2016.png")
+        embed.set_thumbnail(
+            url="https://desu.shikimori.one/uploads/poster/animes/54265/preview_alt-9867d9e078891abe32b4da77910b9b68.jpeg")
         await inter.send(embed=embed)
 
     @commands.slash_command(description="Очищает чат (count сообщений)")
@@ -128,6 +133,44 @@ class SlashCommands(commands.Cog):
             conn.commit()
 
         await inter.send(f"Текущий опыт {user.mention} увеличен на {amount} единиц.")
+
+    @commands.slash_command()
+    async def anim(self, inter, date: str = None):
+
+        # embed = disnake.Embed(
+        #     title=anim[0]["date"],
+        #     description=anim[0]["article"]["title"]
+        # )
+
+        if date is None:
+
+            m = []
+            for anime in anim:
+                if anime["date"][:21] == "Уже должно было выйти":
+                    m.append(anime)
+            embed = disnake.Embed(
+                title=m[0]["date"],
+            )
+            for i in m:
+                embed.add_field(name=i['article']["title"], value=f"{i['article']['series']}\n{i['article']['time']}",
+                                inline=False)
+                embed.set_image(url=i['article']['url_photo'])
+            await inter.response.send_message(embed=embed)
+
+        elif date == "сегодня":
+            m = []
+            for anime in anim:
+                if anime["date"][:7] == "сегодня":
+                    m.append(anime)
+            embed = disnake.Embed(
+                title=m[0]["date"],
+            )
+            for i in m:
+                embed.add_field(name=i['article']["title"], value=f"{i['article']['series']}\n{i['article']['time']}",
+                                inline=False)
+                embed.set_image(url=i['article']['url_photo'])
+
+            await inter.response.send_message(embed=embed)
 
 
 def setup(bot: commands.Bot):
