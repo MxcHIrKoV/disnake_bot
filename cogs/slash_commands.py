@@ -143,10 +143,6 @@ class SlashCommands(commands.Cog):
         #     description=anim[0]["article"]["title"]
         # )
 
-
-
-
-
         if date is None:
 
             m = []
@@ -176,7 +172,6 @@ class SlashCommands(commands.Cog):
                 embed.set_image(url=i['article']['url_photo'])
 
             await inter.response.send_message(embed=embed)
-
 
         # elif date == (i for i in num):
         #     m = []
