@@ -5,7 +5,7 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-TOKEN = os.getenv("DISCORD_TOKEN")
+TOKEN = os.getenv("DISCORD_TOKEN2")
 
 bot = commands.Bot(command_prefix=".", intents=disnake.Intents.all(),
                    activity=disnake.Game("PyCharm", status=disnake.Status.online))
